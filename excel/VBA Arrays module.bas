@@ -9,10 +9,18 @@ Public Function GetLength(arr As Variant) As Long
 	
 	Dim upper As Long, lower As Long
 	
-	On Error GoTo GetLength_empty_array
+	On Error Resume Next
 	upper = UBound(arr)
 	lower = LBound(arr)
-	On Error GoTo -1
+	If Err.Number = 9 Then
+		'error: Subscript out of range
+		GoTo GetLength_empty_array
+	ElseIf Err.Number <> 0 Then
+		Dim savedErr: savedErr = Array(Err.Number, Err.Source, Err.Description)
+		On Error GoTo 0
+		Err.Raise savedErr(0), savedErr(1), savedErr(2)
+	End If
+	On Error GoTo 0
 	
 	If upper < lower Then
 		'note: the array was declared and initialized like `Dim arr(): arr = Array()`
@@ -25,12 +33,6 @@ Public Function GetLength(arr As Variant) As Long
 	
 GetLength_empty_array:
 	'the array is empty
-	
-	If Err.Number = 9 Then
-		'error: Subscript out of range
-		'note: the array was declared like `Dim arr()`
-		On Error GoTo -1
-	End If
 	
 	GetLength = 0
 	
@@ -80,15 +82,25 @@ Public Sub Push(arr As Variant, item As Variant)
 	Dim lower As Variant: lower = GetLBound(arr)
 	Dim upper As Variant: upper = GetUBound(arr)
 	
-	If IsNull(lower) Or IsNull(upper) Then
+	If IsNull(lower) Then
 		'the array is empty
 		
 		'add the new value
 		arr = Array(item)
 	Else
 		'resize the array
+		On Error Resume Next
 		ReDim Preserve arr(lower To (upper + 1))
-		'possible error 10: This array is fixed or temporarily locked
+		If Err.Number = 10 Then
+			'error: This array is fixed or temporarily locked
+			Err.Description = "This array is fixed or temporarily locked: 'arr' must be a dynamic array"
+		End If
+		If Err.Number <> 0 Then
+			Dim savedErr: savedErr = Array(Err.Number, Err.Description)
+			On Error GoTo 0
+			Err.Raise savedErr(0), "Push", savedErr(1)
+		End If
+		On Error GoTo 0
 		
 		'add the new value
 		assignAtIndex arr, upper + 1, item
@@ -132,8 +144,18 @@ Public Function Pop(arr As Variant) As Variant
 		End If
 	Else
 		'resize the array
+		On Error Resume Next
 		ReDim Preserve arr(lower To (upper - 1))
-		'possible error 10: This array is fixed or temporarily locked
+		If Err.Number = 10 Then
+			'error: This array is fixed or temporarily locked
+			Err.Description = "This array is fixed or temporarily locked: 'arr' must be a dynamic array"
+		End If
+		If Err.Number <> 0 Then
+			Dim savedErr: savedErr = Array(Err.Number, Err.Description)
+			On Error GoTo 0
+			Err.Raise savedErr(0), "Pop", savedErr(1)
+		End If
+		On Error GoTo 0
 	End If
 	
 End Function
@@ -157,7 +179,16 @@ Public Sub Unshift(arr As Variant, item As Variant)
 	Else
 		'resize the array
 		ReDim Preserve arr(lower To (upper + 1))
-		'possible error 10: This array is fixed or temporarily locked
+		If Err.Number = 10 Then
+			'error: This array is fixed or temporarily locked
+			Err.Description = "This array is fixed or temporarily locked: 'arr' must be a dynamic array"
+		End If
+		If Err.Number <> 0 Then
+			Dim savedErr: savedErr = Array(Err.Number, Err.Description)
+			On Error GoTo 0
+			Err.Raise savedErr(0), "Unshift", savedErr(1)
+		End If
+		On Error GoTo 0
 		
 		'move everything toward the upper bound by one position
 		For i = upper To lower Step -1
@@ -213,7 +244,16 @@ Public Function Shift(arr As Variant) As Variant
 		
 		'resize the array
 		ReDim Preserve arr(lower To (upper - 1))
-		'possible error 10: This array is fixed or temporarily locked
+		If Err.Number = 10 Then
+			'error: This array is fixed or temporarily locked
+			Err.Description = "This array is fixed or temporarily locked: 'arr' must be a dynamic array"
+		End If
+		If Err.Number <> 0 Then
+			Dim savedErr: savedErr = Array(Err.Number, Err.Description)
+			On Error GoTo 0
+			Err.Raise savedErr(0), "Shift", savedErr(1)
+		End If
+		On Error GoTo 0
 	End If
 	
 End Function
