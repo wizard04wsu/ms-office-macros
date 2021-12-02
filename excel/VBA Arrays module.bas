@@ -4,7 +4,7 @@ Attribute VB_Name = "Arrays"
 Public Function GetLength(arr As Variant) As Long
 	
 	If Not IsArray(arr) Then
-		Err.Raise 13, "GetLength", "Type mismatch"
+		Err.Raise 13, "GetLength", "Type mismatch: 'arr' must be an array"
 	End If
 	
 	Dim upper As Long, lower As Long
@@ -40,7 +40,7 @@ End Function
 Public Function GetUBound(arr As Variant) As Variant
 	
 	If Not IsArray(arr) Then
-		Err.Raise 13, "GetUBound", "Type mismatch"
+		Err.Raise 13, "GetUBound", "Type mismatch: 'arr' must be an array"
 	End If
 	
 	If GetLength(arr) = 0 Then
@@ -57,7 +57,7 @@ End Function
 Public Function GetLBound(arr As Variant) As Variant
 	
 	If Not IsArray(arr) Then
-		Err.Raise 13, "GetLBound", "Type mismatch"
+		Err.Raise 13, "GetLBound", "Type mismatch: 'arr' must be an array"
 	End If
 	
 	If GetLength(arr) = 0 Then
@@ -74,7 +74,7 @@ End Function
 Public Sub Push(arr As Variant, item As Variant)
 	
 	If Not IsArray(arr) Then
-		Err.Raise 13, "Push", "Type mismatch"
+		Err.Raise 13, "Push", "Type mismatch: 'arr' must be an array"
 	End If
 	
 	Dim lower As Variant: lower = GetLBound(arr)
@@ -100,7 +100,7 @@ End Sub
 Public Function Pop(arr As Variant) As Variant
 	
 	If Not IsArray(arr) Then
-		Err.Raise 13, "Pop", "Type mismatch"
+		Err.Raise 13, "Pop", "Type mismatch: 'arr' must be an array"
 	End If
 	
 	Dim length As Long: length = GetLength(arr)
@@ -128,7 +128,7 @@ Public Function Pop(arr As Variant) As Variant
 		
 		If GetLength(arr) > 0 Then
 			'the array is fixed-length
-			Err.Raise 10, "Pop", "This array is fixed or temporarily locked"
+			Err.Raise 10, "Pop", "This array is fixed or temporarily locked: 'arr' must be a dynamic array"
 		End If
 	Else
 		'resize the array
@@ -142,7 +142,7 @@ End Function
 Public Sub Unshift(arr As Variant, item As Variant)
 	
 	If Not IsArray(arr) Then
-		Err.Raise 13, "Unshift", "Type mismatch"
+		Err.Raise 13, "Unshift", "Type mismatch: 'arr' must be an array"
 	End If
 	
 	Dim lower As Variant: lower = GetLBound(arr)
@@ -174,7 +174,7 @@ End Sub
 Public Function Shift(arr As Variant) As Variant
 	
 	If Not IsArray(arr) Then
-		Err.Raise 13, "Shift", "Type mismatch"
+		Err.Raise 13, "Shift", "Type mismatch: 'arr' must be an array"
 	End If
 	
 	Dim length As Long: length = GetLength(arr)
@@ -203,7 +203,7 @@ Public Function Shift(arr As Variant) As Variant
 		
 		If GetLength(arr) > 0 Then
 			'the array is fixed-length
-			Err.Raise 10, "Shift", "This array is fixed or temporarily locked"
+			Err.Raise 10, "Shift", "This array is fixed or temporarily locked: 'arr' must be a dynamic array"
 		End If
 	Else
 		'move everything toward the lower bound by one position
@@ -222,10 +222,10 @@ End Function
 Public Sub assignAtIndex(arr As Variant, index As Variant, item As Variant)
 	
 	If Not IsArray(arr) Then
-		Err.Raise 13, "assignAtIndex", "Type mismatch"
+		Err.Raise 13, "assignAtIndex", "Type mismatch: 'arr' must be an array"
 	End If
 	If index <> CLng(index) Then
-		Err.Raise 13, "assignAtIndex", "Type mismatch"
+		Err.Raise 13, "assignAtIndex", "Type mismatch: 'index' must be an integer"
 	End If
 	
 	Dim length As Long: length = GetLength(arr)
@@ -237,7 +237,7 @@ Public Sub assignAtIndex(arr As Variant, index As Variant, item As Variant)
 	If Not invalidIndex Then invalidIndex = (index < lower Or index > upper)	'the index is out of range
 	
 	If invalidIndex Then
-		Err.Raise 9, "assignAtIndex", "Subscript out of range"
+		Err.Raise 9, "assignAtIndex", "Subscript out of range: 'index' is outside of the array's lower and upper bounds"
 	End If
 	
 	If IsObject(item) Then
